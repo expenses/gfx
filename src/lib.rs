@@ -1,11 +1,3 @@
-#![warn(
-    trivial_casts,
-    trivial_numeric_casts,
-    unused_extern_crates,
-    unused_import_braces,
-    unused_qualifications
-)]
-
 use std::{
     fmt::Debug,
     iter::Sum,
@@ -40,6 +32,16 @@ where
 
     pub fn initial_range(&self) -> &Range<T> {
         &self.initial_range
+    }
+
+    pub fn grow_to(&mut self, new_end: T) {
+        if let Some(last_range) = self.free_ranges.last_mut() {
+            last_range.end = new_end;
+        } else {
+            self.free_ranges.push(self.initial_range.end..new_end);
+        }
+
+        self.initial_range.end = new_end;
     }
 
     pub fn allocate_range(&mut self, length: T) -> Result<Range<T>, RangeAllocationError<T>> {
@@ -200,6 +202,18 @@ mod tests {
         assert!(alloc.allocated_ranges().eq(std::iter::once(0..10)));
         assert!(alloc.allocate_range(4).is_err());
         alloc.free_range(0..10);
+    }
+
+    #[test]
+    fn test_grow() {
+        let mut alloc = RangeAllocator::new(0..11);
+        // Test if the allocator runs out of space correctly
+        assert_eq!(alloc.allocate_range(10), Ok(0..10));
+        assert!(alloc.allocated_ranges().eq(std::iter::once(0..10)));
+        assert!(alloc.allocate_range(4).is_err());
+        alloc.grow_to(20);
+        assert_eq!(alloc.allocate_range(4), Ok(10..14));
+        alloc.free_range(0..14);
     }
 
     #[test]
