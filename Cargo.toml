@@ -1,21 +1,15 @@
-[workspace]
+[package]
+name = "range-alloc"
+version = "0.1.2"
+description = "Generic range allocator used by gfx-rs backends"
+homepage = "https://github.com/gfx-rs/gfx"
+repository = "https://github.com/gfx-rs/gfx"
+keywords = ["allocator"]
+license = "MIT OR Apache-2.0"
+authors = ["The Gfx-rs Developers"]
+documentation = "https://docs.rs/range-alloc"
+categories = ["memory-management"]
+edition = "2018"
 
-members = [
-    "src/auxil/auxil",
-    "src/auxil/external-memory",
-    "src/auxil/range-alloc",
-    "src/auxil/renderdoc",
-    "src/backend/dx11",
-    "src/backend/dx12",
-    "src/backend/empty",
-    "src/backend/gl",
-    "src/backend/metal",
-    "src/backend/vulkan",
-    "src/backend/webgpu",
-    "src/hal",
-    "src/warden",
-    "examples",
-]
-
-[patch."https://github.com/gfx-rs/naga"]
-#naga = { path = "../naga" }
+[lib]
+name = "range_alloc"
